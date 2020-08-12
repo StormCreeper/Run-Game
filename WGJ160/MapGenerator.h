@@ -20,7 +20,7 @@ class MapGenerator {
 	static std::map<int, Chunk> chunks;
 	static Tileset* tls;
 
-	static SimplexNoise pn;
+	static SimplexNoise pn; 
 
 	static int seed;
 public:
