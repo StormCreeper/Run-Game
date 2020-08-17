@@ -24,6 +24,7 @@ void setUniformInt(unsigned int shader, const char* name, int value);
 void setUniformFloat(unsigned int shader, const char* name, float value);
 
 float lerp(float a, float b, float c);
+float sign(float x);
 
 struct Bounds {
     float x;

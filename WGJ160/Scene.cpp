@@ -104,7 +104,7 @@ void Scene::renderScene(float deltaTime) {
 
     setUniformFloat(shader, "life", player->life / 100.0f);
 
-    player->update(deltaTime, window, MapGenerator::getChunk(int(player->position.x)).map);
+    player->update(deltaTime, window);
     camera += (player->position - camera) * 3.0f * deltaTime;
 
     shakeVel += (-shake) * deltaTime * 1000.0f;
@@ -118,7 +118,7 @@ void Scene::renderScene(float deltaTime) {
     
     setUniformVec2(shader, "offset", 0, 0);
     
-    NPC::updateAll(deltaTime);
+    NPC::updateAll(deltaTime, player->position);
 
     player->draw(shader);
     NPC::drawAll(shader);

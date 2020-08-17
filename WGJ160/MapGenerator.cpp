@@ -5,7 +5,7 @@
 std::map<int, Chunk> MapGenerator::chunks;
 Tileset *MapGenerator::tls;
 
-const int MapGenerator::chunkW(40);
+const int MapGenerator::chunkW(20);
 const int MapGenerator::chunkH(80);
 SimplexNoise MapGenerator::pn;
 
@@ -18,7 +18,7 @@ void MapGenerator::initGenerator() {
 }
 void MapGenerator::generateChunk(int x) {
 
-	unsigned char data[40 * 80] = {31};
+	unsigned char data[20 * 80] = {31};
 
 	for (int i = 0; i < chunkW; i++) {
 		int height = (pn.fractal(5, (i + x * chunkW) * 0.005f  + 20 + seed) * 0.5f + 0.5f) * chunkH / 2;
@@ -49,7 +49,9 @@ void MapGenerator::generateChunk(int x) {
 	tlm->prepareOpenGL();
 	tlm->initOpenGL();
 	chunks[x] = {x, tlm};
-	for (int i = 0; i < rand() % 4; i++)
+
+	int npcNum = rand() % 4;
+	for (int i = 0; i < npcNum; i++)
 		NPC::addNPC(new NPC(glm::vec2(x * chunkW + rand() % chunkW, 0)));
 }
 void MapGenerator::drawMap(unsigned int shader) {
@@ -66,7 +68,7 @@ void MapGenerator::updateChunks(int playerPos) {
 	}
 	if (dying >= 0) deleteChunk(dying);
 	for (int i = std::max(playerPos / chunkW - 1, 0); i <= playerPos / chunkW + 1; i++) {
-		if (chunks.find(i) == chunks.end()) {
+		if (chunks[i].map == nullptr) {
 			generateChunk(i);
 		}
 	}
@@ -88,4 +90,22 @@ void MapGenerator::deleteGenerator() {
 	}
 	chunks.clear();
 	delete tls;
+}
+
+std::vector<Bounds> MapGenerator::getBBs(glm::fvec2 pos) {
+	int x = pos.x / chunkW;
+	std::vector<Bounds> bounds;
+	if (chunks[x - 1].map != nullptr) {
+		std::vector<Bounds> b2 = chunks[x - 1].map->getBBs(pos);
+		bounds.insert(bounds.end(), b2.begin(), b2.end());
+	}
+	if (chunks[x].map != nullptr) {
+		std::vector<Bounds> b2 = chunks[x].map->getBBs(pos);
+		bounds.insert(bounds.end(), b2.begin(), b2.end());
+	}
+	if (chunks[x + 1].map != nullptr) {
+		std::vector<Bounds> b2 = chunks[x + 1].map->getBBs(pos);
+		bounds.insert(bounds.end(), b2.begin(), b2.end());
+	}
+	return bounds;
 }

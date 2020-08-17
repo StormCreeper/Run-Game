@@ -152,6 +152,11 @@ float lerp(float a, float b, float c) {
     return a + c*(b-a);
 }
 
+float sign(float x) {
+    if (x == 0) return 0;
+    return x / abs(x);
+}
+
 bool intersects(Bounds r1, Bounds r2) {
     return !(r2.x > r1.x + r1.w || r2.x + r2.w < r1.x || r2.y > r1.y + r1.h || r2.y + r2.h < r1.y);
 }

@@ -34,59 +34,78 @@ NPC::NPC(glm::vec2 pos) : w(4), h(2), position(pos), velocity(0, 0) {
 	glBindVertexArray(0);
 
 	anim = { 0, 0, 1, 0.1f, 0.0f, 0.0f };
+
+	movementVel = 0;
+	movementDuration = (rand() % 100) / 20.0f + 1;
+	movementBeginning = glfwGetTime();
 }
 NPC::~NPC() {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 }
-void NPC::update(float deltaTime, Tilemap* map) {
-	if (map == NULL) {
-		dead = 1;
-		return;
-	}
+void NPC::update(float deltaTime, glm::fvec2 &playerPos) {
 	anim.currentTime += deltaTime;
 	if (anim.currentTime - anim.lastFrameTime > anim.deltaTime) {
 		anim.lastFrameTime = anim.currentTime;
 		int mod = mods[anim.y];
 		anim.x = (anim.x + 1) % mod;
 	}
+
+	if (glfwGetTime() - movementBeginning > movementDuration) {
+		if (movementVel == 0)
+			movementVel = (rand() % 2) ? 1 : -1;
+		else
+			movementVel = 0;
+		movementBeginning = glfwGetTime();
+		movementDuration = (rand() % 40) / 10.0f + 1;
+	} else {
+		if (movementVel == 0) {
+			anim.y = 0;
+		} else {
+			anim.y = 1;
+			velocity.x += movementVel;
+			anim.flip = movementVel < 0;
+		}
+	}
+
 	velocity.x *= pow(0.8f, deltaTime * 100);
 
-	std::vector<Bounds> bounds = map->getBBs(position);
+	std::vector<Bounds> bounds = MapGenerator::getBBs(position);
+	
 	position.x += velocity.x * deltaTime;
 	if (collide(bounds)) position.x -= velocity.x * deltaTime;
+
 	position.y += velocity.y * deltaTime;
 	if (collide(bounds)) {
 		position.y -= velocity.y * deltaTime;
 		velocity.y = 0;
 	}
 	if (collide(bounds)) {
-		position.y-=0.01f;
-	}
-	if (velocity.y == 0) {
-		anim.y = 0;
+		position.y -= 0.01f;
 	}
 	velocity.y += 20.0f * deltaTime;
+	
+	if (movementVel != 0) {
+		position.x += movementVel * 0.5f;
+		if (collide(bounds)) velocity.y = -4;
+		position.x -= movementVel * 0.5f;
+	}
+	if (sign(playerPos.x - position.x) == movementVel && abs(playerPos.x - position.x) < 6 && abs(playerPos.y - position.y) < 3) {
+		shooting = 1;
+	}
 
-	bool sp = 1;
-	if (sp) {
+	if (shooting) {
 		anim.y = 4;
 		if (glfwGetTime() - bLastTime > bDeltaTime) {
 			Projectile::addProjectile(new Bullet(glm::fvec2(position), glm::fvec2(20 * (anim.flip ? -1 : 1) + velocity.x, float(rand() % 100) / 25.0f - 2), 1));
 			bLastTime = glfwGetTime();
-			/*if (!SoundManager::isPlaying("shoot2")) */SoundManager::playSound("shoot2");
+			SoundManager::playSound("shoot2");
 
-			velocity.x += 4 * (anim.flip ? 1 : -1);
+			velocity.x += 5 * (anim.flip ? 1 : -1);
+
+			shooting = 0;
 		}
 	}
-	if (velocity.y < 0) {
-		if (!sp) anim.y = 2;
-	} else if (abs(velocity.x) > 0) {
-		if (!sp) anim.y = 1;
-	} else {
-		if (!sp) anim.y = 0;
-	}
-
 	if (position.y > 100) {
 		dead = 1;
 	}
@@ -124,9 +143,9 @@ void NPC::init() {
 	tls = new Tileset(11, 5, "Textures/enemy.png", GL_TEXTURE5);
 }
 
-void NPC::updateAll(float deltaTime) {
+void NPC::updateAll(float deltaTime, glm::fvec2 &playerPos) {
 	for (int i = 0; i < npcs.size(); i++) {
-		npcs[i]->update(deltaTime, MapGenerator::getChunk(npcs[i]->position.x).map);
+		npcs[i]->update(deltaTime, playerPos);
 		if (npcs[i]->dead) {
 			delete npcs[i];
 			npcs.erase(npcs.begin() + i);

@@ -133,9 +133,8 @@ void Bomb::update(float deltaTime) {
 					{
 						glm::fvec2 dir = Scene::player->position - position;
 						float l = sqrtf(dir.x * dir.x + dir.y * dir.y);
-						if (l < 4) {
+						if (l < 4 && l > 0.01f) {
 							dir *= 20 / l;
-
 							Scene::player->velocity = dir;
 							Scene::player->velocity.y = -abs(Scene::player->velocity.y);
 						}

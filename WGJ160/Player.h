@@ -27,7 +27,7 @@ public:
 
 	Player();
 	~Player();
-	void update(float deltaTime, GLFWwindow* window, Tilemap* map);
+	void update(float deltaTime, GLFWwindow* window);
 	bool collide(std::vector<Bounds> tiles) const;
 	bool onGround(std::vector<Bounds> tiles);
 	void draw(unsigned int shader) const;

@@ -4,6 +4,7 @@
 #include <random>
 #include <time.h>
 #include "Scene.h"
+#include "MapGenerator.h"
 
 Player::Player() : w(4), h(2), position(3, 0), velocity(0, 0), tls(9, 7, "Textures/player.png", GL_TEXTURE1) {
 	float w2 = w / 2.0f, h2 = h / 2.0f;
@@ -43,8 +44,7 @@ Player::~Player() {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 }
-void Player::update(float deltaTime, GLFWwindow* window, Tilemap* map) {
-	if (map == nullptr) return;
+void Player::update(float deltaTime, GLFWwindow* window) {
 	anim.currentTime += deltaTime;
 	if (anim.currentTime - anim.lastFrameTime > anim.deltaTime) {
 		anim.lastFrameTime = anim.currentTime;
@@ -60,7 +60,7 @@ void Player::update(float deltaTime, GLFWwindow* window, Tilemap* map) {
 		anim.flip = 0;
 	}
 
-	std::vector<Bounds> bounds = map->getBBs(position);
+	std::vector<Bounds> bounds = MapGenerator::getBBs(position);
 	velocity.x *= pow(0.85f, deltaTime * 100);
 	position.x += velocity.x * deltaTime;
 	if(collide(bounds)) position.x -= velocity.x * deltaTime;
@@ -74,7 +74,7 @@ void Player::update(float deltaTime, GLFWwindow* window, Tilemap* map) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_UP)) {
 		if (onGround(bounds)) {
-			velocity.y = -11;
+			velocity.y = -12;
 			anim.y = 2;
 		}
 	}
@@ -117,7 +117,7 @@ void Player::update(float deltaTime, GLFWwindow* window, Tilemap* map) {
 }
 bool Player::collide(std::vector<Bounds> tiles) const {
 	if (position.x < 0) return true;
-	Bounds b = { position.x - 0.5f, position.y - 0.3f, 1.0f, 1.2f };
+	Bounds b = { position.x - 0.4f, position.y - 0.3f, 0.8f, 1.2f };
 	for (unsigned int i = 0; i < tiles.size(); i++) {
 		if (intersects(b, tiles[i])) return true;
 	}

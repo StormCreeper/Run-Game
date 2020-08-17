@@ -30,4 +30,6 @@ public:
 	static Chunk getChunk(int x);
 	static bool hasChunk(int x);
 	static void deleteGenerator();
+
+	static std::vector<Bounds> getBBs(glm::fvec2 pos);
 };
