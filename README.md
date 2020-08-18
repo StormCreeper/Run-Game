@@ -1,6 +1,6 @@
 # Run-Game
 Run is a game made using c++ and OpenGL. It is oriented towards destruction and procedural generation.
-It has been initiated for the weekly game jam #160, and al
+It has been initiated for the weekly game jam #160, and all assets have been made during this week or after.
 
 ## Usage
 There is a sln file for compiling with visual studio, but you can compile with the compiler you want (you may have to change the code depending on your compiler).
@@ -15,7 +15,7 @@ You will have to link :
 In the future I might include these files in the repos.
 
 ## Authors
-I am the author of all the source files of this repos, except glad.c, and stb_image.h.
+I am the author of all the source files of this repos, except glad.c and stb_image.h.
 Coximor made all the graphics, and Nyaon made the sfx and musics.
 
 ## License
