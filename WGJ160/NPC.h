@@ -18,7 +18,7 @@ public:
 	glm::fvec2 velocity;
 
 	float bLastTime;
-	float bDeltaTime = 0.4f;
+	float bDeltaTime = 0.7f;
 
 	int movementVel;
 	float movementDuration;

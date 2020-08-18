@@ -62,26 +62,30 @@ void Player::update(float deltaTime, GLFWwindow* window) {
 
 	std::vector<Bounds> bounds = MapGenerator::getBBs(position);
 	velocity.x *= pow(0.85f, deltaTime * 100);
+
 	position.x += velocity.x * deltaTime;
-	if(collide(bounds)) position.x -= velocity.x * deltaTime;
+	if (collide(bounds)) position.x -= velocity.x * deltaTime;
+
 	position.y += velocity.y * deltaTime;
 	if (collide(bounds)) {
-		position.y -= velocity.y * deltaTime;
 		velocity.y = 0;
+		do {
+			position.y -= 0.01f;
+			bounds = MapGenerator::getBBs(position);
+		} while (collide(bounds));
 	}
-	if (collide(bounds)) {
-		position.y-=0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_UP)) {
-		if (onGround(bounds)) {
+	if (onGround(bounds)) {
+		if (glfwGetKey(window, GLFW_KEY_UP)) {
 			velocity.y = -12;
 			anim.y = 2;
 		}
+	} else {
+		velocity.y += 20.0f * deltaTime;
 	}
+	
 	if (velocity.y == 0) {
 		anim.y = 0;
 	}
-	velocity.y += 20.0f * deltaTime;
 
 	bool sp = glfwGetKey(window, GLFW_KEY_SPACE);
 	if (sp) {
@@ -102,6 +106,7 @@ void Player::update(float deltaTime, GLFWwindow* window) {
 			bUnpressed = 0;
 		}
 	} else bUnpressed = 1;
+
 	if (velocity.y < 0) {
 		if(!sp) anim.y = 2;
 	} else if (abs(velocity.x) > 0.01f) {

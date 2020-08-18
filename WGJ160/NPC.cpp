@@ -77,12 +77,13 @@ void NPC::update(float deltaTime, glm::fvec2 &playerPos) {
 
 	position.y += velocity.y * deltaTime;
 	if (collide(bounds)) {
-		position.y -= velocity.y * deltaTime;
 		velocity.y = 0;
+		do {
+			position.y -= 0.01f;
+			bounds = MapGenerator::getBBs(position);
+		} while (collide(bounds));
 	}
-	if (collide(bounds)) {
-		position.y -= 0.01f;
-	}
+
 	velocity.y += 20.0f * deltaTime;
 	
 	if (movementVel != 0) {
@@ -90,7 +91,7 @@ void NPC::update(float deltaTime, glm::fvec2 &playerPos) {
 		if (collide(bounds)) velocity.y = -4;
 		position.x -= movementVel * 0.5f;
 	}
-	if (sign(playerPos.x - position.x) == movementVel && abs(playerPos.x - position.x) < 6 && abs(playerPos.y - position.y) < 3) {
+	if (sign(playerPos.x - position.x) == (anim.flip ? -1 : 1) && abs(playerPos.x - position.x) < 10 && abs(playerPos.y - position.y) < 3) {
 		shooting = 1;
 	}
 
