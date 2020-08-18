@@ -51,9 +51,6 @@
     <ClCompile Include="Particle.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="glad.c">
-      <Filter>Fichiers sources\helper</Filter>
-    </ClCompile>
     <ClCompile Include="SimplexNoise.cpp">
       <Filter>Fichiers sources\helper</Filter>
     </ClCompile>
@@ -80,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="Projectile.cpp">
       <Filter>Fichiers sources\gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.cpp">
+      <Filter>Fichiers sources\helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
