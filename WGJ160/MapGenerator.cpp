@@ -74,7 +74,7 @@ void MapGenerator::updateChunks(int playerPos) {
 	}
 }
 Chunk MapGenerator::getChunk(int x) {
-	if (chunks.find(x / chunkW) == chunks.end()) return { -1, NULL };
+	if (chunks.find(x / chunkW) == chunks.end()) return { -1, nullptr };
 	return chunks[x / chunkW];
 }
 bool MapGenerator::hasChunk(int x) {

@@ -78,7 +78,7 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Fichiers sources\gameobjects</Filter>
     </ClCompile>
-    <ClCompile Include="glad.cpp">
+    <ClCompile Include="glad.c">
       <Filter>Fichiers sources\helper</Filter>
     </ClCompile>
   </ItemGroup>

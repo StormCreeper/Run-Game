@@ -68,7 +68,7 @@ void Tilemap::initOpenGL() {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, tilecount * 24 * sizeof(float), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) nullptr);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) (2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
@@ -98,7 +98,7 @@ unsigned char Tilemap::alterTile(int x, int y, int damages) {
 				float px = x + offset.x + (rand() % 100) / 100.0f;
 				float py = y + (rand() % 100) / 100.0f;
 
-				Particle::addParticle(new Particle(glm::fvec2(px, py), glm::fvec2(vx, vy), 2, 0));
+				Particle::addParticle(new Particle(glm::fvec2(px, py), glm::fvec2(vx, vy), 2, false));
 			}
 			unsigned char tile = map[x + y * mapWidth].index;
 			map[x + y * mapWidth].index = 31;

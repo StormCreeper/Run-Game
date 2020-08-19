@@ -7,8 +7,8 @@ class Player {
 	unsigned int VAO, VBO;
 	float w, h;
 
-	float bLastTime;
-	float bDeltaTime;
+	double bLastTime;
+	double bDeltaTime;
 
 	Animation anim;
 
@@ -16,7 +16,7 @@ class Player {
 		4, 3, 9, 6, 9, 4, 6
 	};
 
-	bool bUnpressed = 1;
+	bool bUnpressed = true;
 public:
 	glm::fvec2 position;
 	glm::fvec2 velocity;

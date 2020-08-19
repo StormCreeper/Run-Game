@@ -8,7 +8,7 @@
 unsigned int Scene::SCR_WIDTH(1280);
 unsigned int Scene::SCR_HEIGHT(720);
 
-GLFWwindow* Scene::window(NULL);
+GLFWwindow* Scene::window(nullptr);
 
 Player* Scene::player;
 
@@ -18,8 +18,8 @@ glm::fvec2 camera(0, 0);
 glm::fvec2 shake(0, 0);
 glm::fvec2 shakeVel(0, 0);
 
-bool Scene::unPressed = 1;
-bool Scene::tUnPressed = 1;
+bool Scene::unPressed = true;
+bool Scene::tUnPressed = true;
 
 void Scene::initialize() {
     glfwInit();
@@ -28,8 +28,8 @@ void Scene::initialize() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Cool Game", NULL, NULL);
-    if (window == NULL) {
+    window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Cool Game", nullptr, nullptr);
+    if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         glfwTerminate();
@@ -174,11 +174,11 @@ void Scene::processInput() {
             }
             free(vertexShaderSource);
             free(fragmentShaderSource);
-            unPressed = 0;
+            unPressed = false;
         }
     }
     else {
-        unPressed = 1;
+        unPressed = true;
     }
 }
 

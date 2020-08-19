@@ -2,7 +2,7 @@
 
 unsigned int createShader(unsigned int shaderType, const char* shaderSource) {
 	unsigned int shader = glCreateShader(shaderType);
-	glShaderSource(shader, 1, &shaderSource, NULL);
+	glShaderSource(shader, 1, &shaderSource, nullptr);
 	glCompileShader(shader);
 
     int success;
@@ -10,7 +10,7 @@ unsigned int createShader(unsigned int shaderType, const char* shaderSource) {
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
     if (!success) {
-        glGetShaderInfoLog(shader, 2048, NULL, infoLog);
+        glGetShaderInfoLog(shader, 2048, nullptr, infoLog);
         std::cerr << "Shader compilation error :\n" << infoLog << std::endl;
         return 128;
     }
@@ -51,13 +51,13 @@ unsigned int createProgram(const char* vname, const char* fname) {
 }
 
 char* readSource(const char* filename) {
-    char* text = NULL;
+    char* text = nullptr;
 
-    if (filename != NULL) {
+    if (filename != nullptr) {
         FILE* file;
         fopen_s(&file, filename, "rt");
 
-        if (file != NULL) {
+        if (file != nullptr) {
             fseek(file, 0, SEEK_END);
             int count = ftell(file);
             rewind(file);
@@ -186,7 +186,7 @@ void createQuad(Mesh& mesh, glm::fvec2 center, glm::fvec2 size) {
     glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);

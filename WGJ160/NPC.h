@@ -17,14 +17,14 @@ public:
 	glm::fvec2 position;
 	glm::fvec2 velocity;
 
-	float bLastTime;
-	float bDeltaTime = 0.7f;
+	double bLastTime;
+	double bDeltaTime = 0.7f;
 
 	int movementVel;
 	float movementDuration;
 	float movementBeginning;
 
-	bool dead = 0;
+	bool dead = false;
 
 	NPC(glm::vec2 pos);
 	~NPC();

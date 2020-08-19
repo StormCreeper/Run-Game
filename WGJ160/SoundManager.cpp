@@ -5,10 +5,10 @@
 std::map<const char*, Sound> SoundManager::sounds;
 
 bool SoundManager::initOpenAL() {
-	ALCdevice* device = alcOpenDevice(NULL);
+	ALCdevice* device = alcOpenDevice(nullptr);
 	if (!device) return false;
 
-	ALCcontext* context = alcCreateContext(device, NULL);
+	ALCcontext* context = alcCreateContext(device, nullptr);
 	if (!context) return false;
 
 	if (!alcMakeContextCurrent(context)) return false;
@@ -27,7 +27,7 @@ void SoundManager::shutdownOpenAL() {
 	ALCcontext* context = alcGetCurrentContext();
 	ALCdevice* device = alcGetContextsDevice(context);
 
-	alcMakeContextCurrent(NULL);
+	alcMakeContextCurrent(nullptr);
 	alcDestroyContext(context);
 	alcCloseDevice(device);
 }

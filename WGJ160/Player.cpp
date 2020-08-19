@@ -2,7 +2,7 @@
 #include "SoundManager.h"
 #include "Projectile.h"
 #include <random>
-#include <time.h>
+#include <ctime>
 #include "Scene.h"
 #include "MapGenerator.h"
 
@@ -25,7 +25,7 @@ Player::Player() : w(4), h(2), position(3, 0), velocity(0, 0), tls(9, 7, "Textur
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)nullptr);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
@@ -38,7 +38,7 @@ Player::Player() : w(4), h(2), position(3, 0), velocity(0, 0), tls(9, 7, "Textur
 	bLastTime = glfwGetTime();
 	bDeltaTime = 0.1f;
 
-	srand(time(0));
+	srand(unsigned int(time(nullptr)));
 }
 Player::~Player() {
 	glDeleteVertexArrays(1, &VAO);
@@ -68,11 +68,13 @@ void Player::update(float deltaTime, GLFWwindow* window) {
 
 	position.y += velocity.y * deltaTime;
 	if (collide(bounds)) {
-		velocity.y = 0;
-		do {
-			position.y -= 0.01f;
+		position.y -= velocity.y * deltaTime;
+		float vsign = sign(velocity.y);
+		while (collide(bounds)) {
+			position.y -= 0.01f * vsign;
 			bounds = MapGenerator::getBBs(position);
-		} while (collide(bounds));
+		}
+		velocity.y = 0;
 	}
 	if (onGround(bounds)) {
 		if (glfwGetKey(window, GLFW_KEY_UP)) {
@@ -82,7 +84,6 @@ void Player::update(float deltaTime, GLFWwindow* window) {
 	} else {
 		velocity.y += 20.0f * deltaTime;
 	}
-	
 	if (velocity.y == 0) {
 		anim.y = 0;
 	}
@@ -91,7 +92,7 @@ void Player::update(float deltaTime, GLFWwindow* window) {
 	if (sp) {
 		anim.y = 5;
 		if (glfwGetTime() - bLastTime > bDeltaTime) {
-			Projectile::addProjectile(new Bullet(glm::fvec2(position), glm::fvec2(20 * (anim.flip ? -1 : 1) + velocity.x, float(rand() % 100) / 25.0f - 2), 0));
+			Projectile::addProjectile(new Bullet(glm::fvec2(position), glm::fvec2(20 * (anim.flip ? -1 : 1) + velocity.x, float(rand() % 100) / 25.0f - 2), false));
 			bLastTime = glfwGetTime();
 			if(!SoundManager::isPlaying("shoot")) SoundManager::playSound("shoot");
 
@@ -103,9 +104,9 @@ void Player::update(float deltaTime, GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_B)) {
 		if (bUnpressed) {
 			Projectile::addProjectile(new Bomb(glm::fvec2(position), glm::fvec2(7 * (anim.flip ? -1 : 1), -6) + velocity));
-			bUnpressed = 0;
+			bUnpressed = false;
 		}
-	} else bUnpressed = 1;
+	} else bUnpressed = true;
 
 	if (velocity.y < 0) {
 		if(!sp) anim.y = 2;
@@ -120,11 +121,12 @@ void Player::update(float deltaTime, GLFWwindow* window) {
 		position.y = 0;
 	}
 }
+
 bool Player::collide(std::vector<Bounds> tiles) const {
 	if (position.x < 0) return true;
 	Bounds b = { position.x - 0.4f, position.y - 0.3f, 0.8f, 1.2f };
-	for (unsigned int i = 0; i < tiles.size(); i++) {
-		if (intersects(b, tiles[i])) return true;
+	for (auto tile : tiles) {
+		if (intersects(b, tile)) return true;
 	}
 	return false;
 }

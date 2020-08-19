@@ -25,7 +25,7 @@ NPC::NPC(glm::vec2 pos) : w(4), h(2), position(pos), velocity(0, 0) {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)nullptr);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 	glEnableVertexAttribArray(1);
@@ -77,11 +77,13 @@ void NPC::update(float deltaTime, glm::fvec2 &playerPos) {
 
 	position.y += velocity.y * deltaTime;
 	if (collide(bounds)) {
-		velocity.y = 0;
-		do {
+		position.y -= velocity.y * deltaTime;
+		float vsign = sign(velocity.y);
+		while (collide(bounds)) {
 			position.y -= 0.01f;
 			bounds = MapGenerator::getBBs(position);
-		} while (collide(bounds));
+		}
+		velocity.y = 0;
 	}
 
 	velocity.y += 20.0f * deltaTime;
@@ -92,30 +94,30 @@ void NPC::update(float deltaTime, glm::fvec2 &playerPos) {
 		position.x -= movementVel * 0.5f;
 	}
 	if (sign(playerPos.x - position.x) == (anim.flip ? -1 : 1) && abs(playerPos.x - position.x) < 10 && abs(playerPos.y - position.y) < 3) {
-		shooting = 1;
+		shooting = true;
 	}
 
 	if (shooting) {
 		anim.y = 4;
 		if (glfwGetTime() - bLastTime > bDeltaTime) {
-			Projectile::addProjectile(new Bullet(glm::fvec2(position), glm::fvec2(20 * (anim.flip ? -1 : 1) + velocity.x, float(rand() % 100) / 25.0f - 2), 1));
+			Projectile::addProjectile(new Bullet(glm::fvec2(position), glm::fvec2(20 * (anim.flip ? -1 : 1) + velocity.x, float(rand() % 100) / 25.0f - 2), true));
 			bLastTime = glfwGetTime();
 			SoundManager::playSound("shoot2");
 
 			velocity.x += 5 * (anim.flip ? 1 : -1);
 
-			shooting = 0;
+			shooting = false;
 		}
 	}
 	if (position.y > 100) {
-		dead = 1;
+		dead = true;
 	}
 }
 bool NPC::collide(std::vector<Bounds> tiles) const {
 	if (position.x < 0) return true;
 	Bounds b = { position.x - 0.5f, position.y - 0.3f, 1.0f, 1.2f };
-	for (unsigned int i = 0; i < tiles.size(); i++) {
-		if (intersects(b, tiles[i])) return true;
+	for (auto tile : tiles) {
+		if (intersects(b, tile)) return true;
 	}
 	return false;
 }
@@ -145,7 +147,7 @@ void NPC::init() {
 }
 
 void NPC::updateAll(float deltaTime, glm::fvec2 &playerPos) {
-	for (int i = 0; i < npcs.size(); i++) {
+	for (unsigned int i = 0; i < npcs.size(); i++) {
 		npcs[i]->update(deltaTime, playerPos);
 		if (npcs[i]->dead) {
 			delete npcs[i];

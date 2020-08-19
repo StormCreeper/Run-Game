@@ -76,10 +76,10 @@ void Bullet::update(float deltaTime) {
 		float l = sqrtf(dir.x * dir.x + dir.y * dir.y);
 		if (l < 1) {
 			Scene::player->life -= 10;
-			dead = 1;
+			dead = true;
 
 			for (int i = 0; i < 16; i++) {
-				Particle::addParticle(new Particle(Scene::player->position, glm::fvec2(float(rand() % 100) / 25 - 2, float(rand() % 100) / 25 - 2), 2, 1));
+				Particle::addParticle(new Particle(Scene::player->position, glm::fvec2(float(rand() % 100) / 25 - 2, float(rand() % 100) / 25 - 2), 2, true));
 			}
 
 		}
@@ -90,10 +90,12 @@ void Bullet::update(float deltaTime) {
 			float l = sqrtf(dir.x * dir.x + dir.y * dir.y);
 			if (l < 1) {
 				npc->dead = true;
-				dead = 1;
+				dead = true;
 				Scene::player->life += 10;
 				for (int i = 0; i < 150; i++) {
-					Particle::addParticle(new Particle(npc->position, glm::fvec2(float(rand() % 100) / 25 - 2, float(rand() % 100) / 25 - 2), 2, 1));
+					float orientation = rand() % 360 * 3.141592f / 180.0f;
+					float dist = rand() % 500 / 100.0f;
+					Particle::addParticle(new Particle(npc->position, glm::fvec2(dist * cosf(orientation), dist * sinf(orientation)), 2, true));
 				}
 			}
 		}
