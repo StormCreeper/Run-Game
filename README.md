@@ -20,6 +20,9 @@ You will have to link :
 
 In the future I might include these files in the repos.
 
+## [To do / Contributing](https://trello.com/b/5Kkqr5G0/run)
+
+
 ## Authors
 I am the author of all the source files of this repos, except glad.c and stb_image.h.
 Coximor made all the graphics, and Nyaon made the sfx and musics.
